@@ -5,7 +5,7 @@ import log from "../logger";
 import { searchYoutubeSubtitle } from "../service/searchYoutube";
 import { downloadVideoFromUrl, videoUrlValidation } from "../service/video.service";
 import path from "path";
-import { searchVideoSubtitle } from "../service/videoFiles.service";
+import { searchVideoSubtitle, videoSearch } from "../service/videoFiles.service";
 import { addToMap } from "../service/cache.service";
 const downloadVideoFromUrlHandler = async (req: Request, res: Response) => {
     try {
@@ -52,7 +52,7 @@ const checkForVideo = async (req: Request, res: Response) => {
     const sub = searchVideoSubtitle(req.params.filename);
     log.info(sub);
     if (sub.length === 0) {
-        
+
         return res.status(404).json({ msg: "Video not found" });
     }
 
@@ -86,17 +86,20 @@ const videoUpload = async (req: Request, res: Response) => {
         fs.renameSync(videoData.videoPath, newPath);
         return res.status(200).json({ fileName: fileName });
     }
-    return res.status(200).json({ msg: "Chunk Uploaded", });
+    return res.status(200).json({ msg: "Chunk Uploaded" });
 
 }
 
 const findKeyWordHandler = async (req: Request, res: Response) => {
     const sub = searchVideoSubtitle(req.params.filename);
     if (sub === undefined || sub.length === 0) {
-
+    
         return res.status(404).json({ msg: "Video not found" });
     }
-
+   
+    const results =await videoSearch(sub, req.params.keyword);
+    log.info(results);
+    return res.status(200).json({ results: results });
 }
 
 

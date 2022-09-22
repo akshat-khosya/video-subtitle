@@ -76,7 +76,7 @@ function VideoUpload() {
         };
         try {
             const res = await axios.post(
-                `http://10.0.3.159:4000/api/video/upload/file?${params.toString()}`,
+                `https://akshat-khosya-video-subtitle-x49wjxjwr69h6w7j-4000.githubpreview.dev/api/video/upload/file?${params.toString()}`,
                 req
             );
             const fileSize = file ? file.size : 0;
