@@ -38,10 +38,10 @@ const searchVideoSubtitle = (id: string) => {
     }
 }
 
-const videoSearch = (sub: string[], keyword: string) => {
+const videoSearch = (sub: string[]) => {
     let set = new Set();
     //readFileSync
-    log.info("start sync");
+    
     sub.forEach((element) => {
         // fs.readFile(element, "utf-8", async (err, data) => {
         //     if (err) {
@@ -51,19 +51,19 @@ const videoSearch = (sub: string[], keyword: string) => {
         //     let c = b.events.dialogue;
         //     set.add(c);
         // })
-        log.info("before redaing");
+        
         let data = fs.readFileSync(element, "utf8");
-        log.info("after redaing");
+        
         let b = parse(data.toString()) as any;
         let c = b.events.dialogue;
         set.add(c);
     });
     let res: Array<any> = [];
     for (let a of set) {
-        // log.info(a);
+        
         res.push(a);
     }
-    log.info(res);
+   
     return res;
 }
 export { searchVideoSubtitle, videoSearch };

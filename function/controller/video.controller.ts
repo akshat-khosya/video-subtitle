@@ -7,6 +7,7 @@ import { downloadVideoFromUrl, videoUrlValidation } from "../service/video.servi
 import path from "path";
 import { searchVideoSubtitle, videoSearch } from "../service/videoFiles.service";
 import { addToMap } from "../service/cache.service";
+import { createLinkedList,getNodes, searchQuery } from "../service/linkedList.service";
 const downloadVideoFromUrlHandler = async (req: Request, res: Response) => {
     try {
         if (req.user) {
@@ -91,15 +92,19 @@ const videoUpload = async (req: Request, res: Response) => {
 }
 
 const findKeyWordHandler = async (req: Request, res: Response) => {
+    const keyword = req.user;
     const sub = searchVideoSubtitle(req.params.filename);
     if (sub === undefined || sub.length === 0) {
-    
+
         return res.status(404).json({ msg: "Video not found" });
     }
-   
-    const results =await videoSearch(sub, req.params.keyword);
-    log.info(results);
-    return res.status(200).json({ results: results });
+
+    const subtitles = videoSearch(sub);
+    log.info(keyword);
+    const node = createLinkedList(keyword);
+    const subTitlesNodes = getNodes(subtitles);
+    const results = searchQuery(node, subTitlesNodes);
+    return res.status(200).json({ results: subTitlesNodes });
 }
 
 
